@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exit Metrika · Cortech</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.8.0/dist/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* Cortech brand palette - iz logoa: tamnoplava pozadina, teal/cyan čvorovi */
+  --bg-dark:#0D1B2A;
+  --bg-mid:#111F30;
+  --bg-panel:#162537;
+  --teal:#1ABCB4;
+  --teal-d:#13968F;
+  --teal-l:#5DD8D2;
+  --teal-glow:rgba(26,188,180,0.15);
+  --cyan:#00D4E8;
+  --cyan-dim:rgba(0,212,232,0.12);
+  /* neutrals */
+  --bg:#F0F4F8;--surface:#FFFFFF;--border:#DDE3EC;
+  --slate:#0F1F2E;--slate-2:#3D5470;--slate-3:#7B93B0;--slate-4:#B8CDE0;
+  /* status */
+  --red:#E53935;--red-l:#FFF0F0;--red-b:#FFBBBA;
+  --amber:#F59E0B;--amber-l:#FFFBEB;--amber-b:#FDE68A;
+  --green:#10B981;--green-l:#ECFDF5;--green-b:#6EE7B7;
+  --blue:#2563EB;--blue-l:#EFF6FF;--blue-b:#93C5FD;
+  --font:'IBM Plex Sans',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--slate);font-size:13px;line-height:1.5;overflow-x:hidden}
+
+/* ===== TOPBAR ===== */
+.topbar{background:var(--bg-dark);padding:0 24px;display:flex;align-items:center;gap:16px;height:52px;position:sticky;top:0;z-index:200;border-bottom:1px solid rgba(26,188,180,0.15)}
+.topbar-logo{display:flex;align-items:center;gap:10px}
+.logo-nodes{display:flex;align-items:center;gap:0;position:relative;width:32px;height:26px}
+.logo-node{position:absolute;width:9px;height:9px;border-radius:50%;background:var(--teal)}
+.logo-node.n1{top:0;left:0;background:var(--teal-l)}
+.logo-node.n2{top:0;right:0;background:var(--teal)}
+.logo-node.n3{bottom:0;left:50%;transform:translateX(-50%);background:var(--cyan)}
+.logo-node.n4{top:50%;transform:translateY(-50%);left:50%;transform:translate(-50%,-50%);width:6px;height:6px;background:var(--teal-d)}
+.logo-line{position:absolute;background:rgba(26,188,180,0.4);height:1px}
+.logo-name{font-size:14px;font-weight:600;letter-spacing:0.12em;color:#fff;text-transform:uppercase}
+.logo-sep{color:rgba(26,188,180,0.4);margin:0 6px;font-size:16px}
+.logo-sub{font-size:11px;color:var(--teal-l);letter-spacing:0.04em;opacity:.85}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.topbar-updated{font-size:10px;color:var(--slate-3);font-family:var(--mono)}
+.topbar-pill{background:rgba(26,188,180,0.1);border:1px solid rgba(26,188,180,0.25);color:var(--teal-l);font-size:10px;padding:3px 10px;border-radius:100px;font-family:var(--mono);display:flex;align-items:center;gap:5px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(26,188,180,.4)}50%{opacity:.7;box-shadow:0 0 0 4px rgba(26,188,180,0)}}
+
+/* ===== LAYOUT ===== */
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 52px)}
+
+/* ===== SIDEBAR ===== */
+.sidebar{background:var(--bg-mid);padding:16px 0 24px;border-right:1px solid rgba(26,188,180,0.08);position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto}
+.sidebar-section{margin-bottom:4px}
+.sidebar-label{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-d);font-family:var(--mono);padding:0 14px 5px;margin-top:18px;display:block;opacity:.8}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 14px;font-size:12px;color:rgba(148,180,210,.75);cursor:pointer;border-left:2px solid transparent;transition:all .15s;text-decoration:none;user-select:none}
+.nav-item:hover{color:#fff;background:rgba(26,188,180,.06)}
+.nav-item.active{color:var(--teal-l);border-left-color:var(--teal);background:rgba(26,188,180,.1)}
+.nav-item i{font-size:15px;width:16px;text-align:center;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:9px;font-weight:600;padding:1px 6px;border-radius:100px;font-family:var(--mono)}
+.nav-badge.amber{background:var(--amber)}
+.nav-badge.teal{background:var(--teal);color:var(--bg-dark)}
+
+/* ===== PAGES ===== */
+.page{display:none;padding:28px 32px;overflow:auto;min-height:calc(100vh - 52px)}
+.page.active{display:block}
+
+/* ===== PAGE HEADER ===== */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px}
+.page-title{font-size:22px;font-weight:300;color:var(--slate);letter-spacing:-0.02em}
+.page-title span{color:var(--teal-d);font-weight:500}
+.page-meta{font-size:12px;color:var(--slate-3);margin-top:3px}
+.header-actions{display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid transparent;font-family:var(--font);transition:all .15s}
+.btn-primary{background:var(--teal);color:var(--bg-dark);border-color:var(--teal)}
+.btn-primary:hover{background:var(--teal-l)}
+.btn-outline{background:transparent;color:var(--slate-2);border-color:var(--border)}
+.btn-outline:hover{background:var(--surface)}
+.btn-danger{background:var(--red);color:#fff;border-color:var(--red)}
+
+/* ===== KPI STRIP ===== */
+.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.kpi-tile{background:var(--surface);padding:14px 16px;transition:background .15s}
+.kpi-tile:hover{background:#F7FBFF}
+.kpi-label{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--slate-3);font-family:var(--mono);margin-bottom:5px}
+.kpi-val{font-size:22px;font-weight:400;color:var(--bg-dark);font-family:var(--mono);letter-spacing:-0.02em}
+.kpi-sub{font-size:10px;margin-top:3px;display:flex;align-items:center;gap:4px}
+.kpi-sub.bad{color:var(--red)}
+.kpi-sub.warn{color:var(--amber)}
+.kpi-sub.good{color:var(--green)}
+.kpi-bar-wrap{margin-top:6px;height:3px;background:var(--border);border-radius:2px}
+.kpi-bar-fill{height:3px;border-radius:2px;transition:width .6s}
+
+/* ===== CARDS ===== */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--border)}
+.card-title{font-size:12px;font-weight:600;color:var(--slate);display:flex;align-items:center;gap:7px;text-transform:uppercase;letter-spacing:.05em}
+.card-title i{font-size:15px;color:var(--teal-d)}
+.card-body{padding:16px 18px}
+.card-link{font-size:11px;color:var(--teal-d);font-weight:500;cursor:pointer;text-decoration:none}
+.card-link:hover{text-decoration:underline}
+.mb16{margin-bottom:16px}
+.mb24{margin-bottom:20px}
+.w100{width:100%}
+
+/* ===== ACTIONS PANEL ===== */
+.actions-panel{background:var(--bg-dark);border:1px solid rgba(26,188,180,0.2);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.actions-header{background:linear-gradient(135deg,rgba(26,188,180,0.12),rgba(26,188,180,0.04));padding:13px 18px;border-bottom:1px solid rgba(26,188,180,0.12);display:flex;align-items:center;justify-content:space-between}
+.actions-title{font-size:12px;font-weight:600;color:#fff;display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:.05em}
+.actions-title i{font-size:15px;color:var(--teal)}
+.actions-meta{font-size:10px;color:var(--teal-l);font-family:var(--mono);opacity:.7}
+.action-item{padding:13px 18px;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:flex-start;gap:12px}
+.action-item:last-child{border-bottom:none}
+.action-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.action-icon.urgent{background:rgba(229,57,53,.15)} .action-icon.urgent i{color:#EF9A9A;font-size:16px}
+.action-icon.warn{background:rgba(245,158,11,.15)} .action-icon.warn i{color:#FCD34D;font-size:16px}
+.action-icon.info{background:rgba(37,99,235,.12)} .action-icon.info i{color:#93C5FD;font-size:16px}
+.action-icon.good{background:rgba(16,185,129,.12)} .action-icon.good i{color:#6EE7B7;font-size:16px}
+.action-body{flex:1}
+.action-title-txt{font-size:12px;font-weight:500;color:#fff;margin-bottom:3px;line-height:1.4}
+.action-desc{font-size:11px;color:rgba(148,180,210,.8);line-height:1.5}
+.action-tag{display:inline-flex;align-items:center;gap:4px;margin-top:5px;font-size:10px;padding:2px 8px;border-radius:4px;font-family:var(--mono);font-weight:500}
+.action-tag.urgent{background:rgba(229,57,53,.12);color:#FFBBBA;border:1px solid rgba(229,57,53,.25)}
+.action-tag.warn{background:rgba(245,158,11,.12);color:#FDE68A;border:1px solid rgba(245,158,11,.25)}
+.action-tag.good{background:rgba(16,185,129,.1);color:#6EE7B7;border:1px solid rgba(16,185,129,.2)}
+.priority-chip{font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:4px;flex-shrink:0;margin-top:2px}
+.priority-chip.p1{background:var(--red);color:#fff}
+.priority-chip.p2{background:var(--amber);color:#fff}
+.priority-chip.p3{background:rgba(148,180,210,.2);color:var(--slate-3)}
+
+/* ===== REASON CHART ===== */
+.reason-list{display:flex;flex-direction:column;gap:8px}
+.reason-row{display:flex;align-items:center;gap:10px}
+.reason-label{font-size:11px;color:var(--slate-2);min-width:110px;text-align:right}
+.reason-bar-wrap{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.reason-bar{height:8px;border-radius:4px;transition:width .5s}
+.reason-count{font-size:11px;font-family:var(--mono);color:var(--slate-2);min-width:24px;text-align:right}
+.reason-pct{font-size:10px;color:var(--slate-3);min-width:30px;font-family:var(--mono)}
+
+/* ===== RISK TABLE ===== */
+.risk-table{width:100%;border-collapse:collapse}
+.risk-table th{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--slate-3);font-family:var(--mono);padding:8px 0;text-align:left;border-bottom:1px solid var(--border)}
+.risk-table td{padding:10px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--slate);vertical-align:middle}
+.risk-table tr:last-child td{border-bottom:none}
+.risk-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px}
+.risk-badge.high{background:var(--red-l);color:var(--red);border:1px solid var(--red-b)}
+.risk-badge.medium{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b)}
+.risk-badge.low{background:var(--green-l);color:var(--green);border:1px solid var(--green-b)}
+.risk-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.turnover-bar{display:flex;align-items:center;gap:8px}
+.tb-track{flex:1;height:4px;background:var(--border);border-radius:2px;min-width:60px}
+.tb-fill{height:4px;border-radius:2px}
+
+/* ===== TENURE SEGS ===== */
+.tenure-segs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tenure-seg{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.tenure-seg-val{font-size:20px;font-weight:500;font-family:var(--mono);color:var(--bg-dark)}
+.tenure-seg-label{font-size:10px;color:var(--slate-3);margin-top:2px}
+.tenure-seg-sub{font-size:10px;margin-top:4px;font-weight:500}
+.tenure-seg-sub.danger{color:var(--red)} .tenure-seg-sub.warn{color:var(--amber)} .tenure-seg-sub.ok{color:var(--green)}
+
+/* ===== INSIGHT CHIPS ===== */
+.insight-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.insight-chip{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:8px;font-size:11px;border:1px solid;line-height:1.4}
+.insight-chip i{font-size:14px;flex-shrink:0}
+.insight-chip.red{background:var(--red-l);border-color:var(--red-b);color:#7F1D1D}
+.insight-chip.amber{background:var(--amber-l);border-color:var(--amber-b);color:#78350F}
+.insight-chip.blue{background:var(--blue-l);border-color:var(--blue-b);color:#1E3A8A}
+.insight-chip.teal{background:rgba(26,188,180,.08);border-color:rgba(26,188,180,.3);color:var(--teal-d)}
+
+/* ===== EXITS TABLE ===== */
+.exits-table{width:100%;border-collapse:collapse}
+.exits-table th{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--slate-3);font-family:var(--mono);padding:9px 12px;text-align:left;background:var(--bg);white-space:nowrap}
+.exits-table td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:12px;color:var(--slate);vertical-align:middle}
+.exits-table tr:hover td{background:#F5F9FF}
+.exits-table tr:last-child td{border-bottom:none}
+.type-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500}
+.type-badge.voljna{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b)}
+.type-badge.nedobrovoljna{background:var(--red-l);color:var(--red);border:1px solid var(--red-b)}
+.type-badge.istek{background:var(--blue-l);color:var(--blue);border:1px solid var(--blue-b)}
+.nps-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.nps-dot.da{background:var(--green)} .nps-dot.mozda{background:var(--amber)} .nps-dot.ne{background:var(--red)}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;background:var(--bg);border:1px solid var(--border);color:var(--slate-2);font-family:var(--mono)}
+.short-tenure{color:var(--red);font-weight:500} .avg-tenure{color:var(--slate-3)}
+.action-btn-sm{padding:3px 8px;font-size:10px;border:1px solid var(--border);border-radius:5px;background:var(--surface);color:var(--red);cursor:pointer;font-family:var(--font)}
+.action-btn-sm:hover{background:var(--red-l)}
+
+/* ===== SIGNAL BOX ===== */
+.signal-box{background:linear-gradient(135deg,#FFF0F0,#FFF8F8);border:1px solid var(--red-b);border-radius:10px;padding:16px 18px;margin-bottom:16px}
+.signal-title{font-size:12px;font-weight:500;color:#7F1D1D;display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.signal-title i{font-size:15px;color:var(--red)}
+.signal-body{font-size:12px;color:#7F1D1D;opacity:.85;line-height:1.6}
+.signal-stats{display:flex;gap:16px;margin-top:10px}
+.signal-stat-val{font-size:18px;font-weight:500;font-family:var(--mono);color:var(--red)}
+.signal-stat-label{font-size:10px;color:var(--slate-2)}
+
+/* ===== TREND CHART ===== */
+.chart-wrap{overflow-x:auto;padding-bottom:4px}
+.chart-svg{display:block}
+.chart-bar-group:hover .chart-bar-rect{opacity:.85}
+
+/* ===== TREND FILTERS ===== */
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.filter-pill{padding:4px 12px;border-radius:100px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--bg);color:var(--slate-2);transition:all .15s}
+.filter-pill.active{background:var(--teal);color:var(--bg-dark);border-color:var(--teal)}
+
+/* ===== ENTRY FORM ===== */
+.form-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:16px}
+.form-section-title{font-size:13px;font-weight:600;color:var(--slate);margin-bottom:16px;display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:.05em}
+.form-section-title i{color:var(--teal-d)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+.form-label{font-size:11px;font-weight:500;color:var(--slate-2);letter-spacing:.03em}
+.form-label .req{color:var(--red)}
+.form-control{padding:8px 12px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:var(--font);color:var(--slate);outline:none;transition:border-color .15s;background:var(--surface)}
+.form-control:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(26,188,180,.1)}
+select.form-control{cursor:pointer}
+textarea.form-control{resize:vertical;min-height:80px}
+.radio-group{display:flex;flex-wrap:wrap;gap:8px}
+.radio-btn{padding:6px 12px;border:1px solid var(--border);border-radius:6px;font-size:11px;cursor:pointer;transition:all .15s;background:var(--surface);color:var(--slate-2);font-family:var(--font)}
+.radio-btn.active{background:var(--teal);color:var(--bg-dark);border-color:var(--teal);font-weight:500}
+.form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
+.success-toast{display:none;background:var(--green-l);border:1px solid var(--green-b);color:#065F46;padding:10px 16px;border-radius:8px;font-size:12px;margin-bottom:16px;align-items:center;gap:8px}
+.success-toast.show{display:flex}
+
+/* ===== QUESTIONNAIRE ===== */
+.questionnaire-wrap{max-width:720px;margin:0 auto}
+.q-header{background:var(--bg-dark);color:#fff;padding:28px 32px;border-radius:10px 10px 0 0;border:1px solid rgba(26,188,180,.2)}
+.q-header-logo{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.q-logo-sq{width:36px;height:36px;background:var(--teal);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.q-logo-sq i{color:var(--bg-dark);font-size:18px}
+.q-logo-txt{font-size:15px;font-weight:600;letter-spacing:.1em;color:#fff;text-transform:uppercase}
+.q-logo-sub{font-size:11px;color:var(--teal-l);opacity:.8}
+.q-header h1{font-size:22px;font-weight:300;color:#fff;margin-bottom:6px;letter-spacing:-.01em}
+.q-header p{font-size:12px;color:rgba(176,210,240,.7);line-height:1.6}
+.q-body{background:var(--surface);border:1px solid var(--border);border-top:none;padding:28px 32px;border-radius:0 0 10px 10px}
+.q-section{margin-bottom:24px}
+.q-section-num{display:inline-block;width:22px;height:22px;background:var(--teal);color:var(--bg-dark);border-radius:50%;font-size:11px;font-weight:600;text-align:center;line-height:22px;margin-right:8px;font-family:var(--mono)}
+.q-section-title{font-size:13px;font-weight:600;color:var(--slate);display:inline}
+.q-section-divider{height:1px;background:var(--border);margin:10px 0 16px}
+.q-field{margin-bottom:14px}
+.q-label{font-size:12px;font-weight:500;color:var(--slate-2);margin-bottom:6px;display:block}
+.q-input{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:var(--font);color:var(--slate);outline:none}
+.q-input:focus{border-color:var(--teal)}
+.q-scale{display:flex;gap:6px;flex-wrap:wrap}
+.q-scale-btn{width:36px;height:36px;border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--mono);background:var(--surface);color:var(--slate-2)}
+.q-scale-btn:hover{background:var(--bg)}
+.q-scale-label{display:flex;justify-content:space-between;margin-top:4px}
+.q-scale-label span{font-size:10px;color:var(--slate-3)}
+.q-checkbox-group{display:flex;flex-direction:column;gap:6px}
+.q-checkbox-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--slate-2);padding:6px 10px;border:1px solid var(--border);border-radius:6px}
+.q-checkbox-item input{accent-color:var(--teal);width:14px;height:14px;cursor:pointer}
+.q-textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:var(--font);color:var(--slate);outline:none;resize:vertical;min-height:70px;line-height:1.5}
+.q-footer{margin-top:20px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.q-footer p{font-size:11px;color:var(--slate-3);line-height:1.5;max-width:400px}
+.print-btn-wrap{display:flex;gap:10px;margin-bottom:20px}
+
+/* ===== DEPT FILTER (odlasci page) ===== */
+.dept-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:16px;background:var(--surface)}
+.dept-tab{padding:7px 14px;font-size:11px;font-weight:500;cursor:pointer;color:var(--slate-2);border-right:1px solid var(--border);transition:all .15s;background:var(--surface)}
+.dept-tab:last-child{border-right:none}
+.dept-tab.active{background:var(--teal);color:var(--bg-dark)}
+.dept-tab:hover:not(.active){background:var(--bg)}
+
+/* ===== STAT SUMMARY (trend page) ===== */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px 16px;text-align:center}
+.stat-box-val{font-size:26px;font-weight:400;font-family:var(--mono);color:var(--bg-dark);letter-spacing:-.02em}
+.stat-box-label{font-size:10px;color:var(--slate-3);margin-top:3px;letter-spacing:.05em;text-transform:uppercase;font-family:var(--mono)}
+.stat-box-trend{font-size:11px;margin-top:4px;font-weight:500}
+.stat-box-trend.up{color:var(--red)}
+.stat-box-trend.down{color:var(--green)}
+
+/* ===== PRINT ===== */
+@media print {
+  .topbar,.sidebar,.page-header,.print-btn-wrap,.header-actions{display:none!important}
+  body{background:#fff!important}
+  .layout{grid-template-columns:1fr!important}
+  .page{display:block!important;padding:0!important}
+  #page-questionnaire{display:block!important}
+  .questionnaire-wrap{max-width:none}
+  .q-header{background:#0D1B2A!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .q-scale-btn,.q-input,.q-textarea,.q-checkbox-item{border:1px solid #ccc!important}
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">
+    <svg width="32" height="28" viewBox="0 0 32 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right:2px">
+      <circle cx="5" cy="5" r="4.5" fill="#1ABCB4" opacity=".9"/>
+      <circle cx="27" cy="5" r="4.5" fill="#5DD8D2" opacity=".85"/>
+      <circle cx="16" cy="23" r="4.5" fill="#00D4E8" opacity=".9"/>
+      <circle cx="16" cy="14" r="3.5" fill="#13968F"/>
+      <line x1="5" y1="5" x2="16" y2="14" stroke="rgba(26,188,180,0.4)" stroke-width="1.2"/>
+      <line x1="27" y1="5" x2="16" y2="14" stroke="rgba(26,188,180,0.4)" stroke-width="1.2"/>
+      <line x1="16" y1="14" x2="16" y2="23" stroke="rgba(26,188,180,0.4)" stroke-width="1.2"/>
+      <line x1="5" y1="5" x2="27" y2="5" stroke="rgba(26,188,180,0.25)" stroke-width="1"/>
+    </svg>
+    <span class="logo-name">Cortech</span>
+    <span class="logo-sep">·</span>
+    <span class="logo-sub">Exit Metrika</span>
+  </div>
+  <div class="topbar-right">
+    <div class="topbar-updated" id="lastUpdated">—</div>
+    <div class="topbar-pill"><span class="live-dot"></span> Automatski ažurirano</div>
+  </div>
+</div>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <span class="sidebar-label">Pregled</span>
+  <a class="nav-item active" data-page="dashboard" onclick="navTo('dashboard')">
+    <i class="ti ti-layout-dashboard"></i> Dashboard
+  </a>
+  <a class="nav-item" data-page="odlasci" onclick="navTo('odlasci')">
+    <i class="ti ti-users"></i> Svi odlasci
+    <span class="nav-badge" id="sidebarTotal">—</span>
+  </a>
+  <a class="nav-item" data-page="trend" onclick="navTo('trend')">
+    <i class="ti ti-trending-up"></i> Trend &amp; analiza
+  </a>
+  <a class="nav-item" data-page="akcije" onclick="navTo('akcije')">
+    <i class="ti ti-alert-triangle"></i> Preporuke
+    <span class="nav-badge amber" id="sidebarActions">—</span>
+  </a>
+
+  <span class="sidebar-label">Unos</span>
+  <a class="nav-item" data-page="unos" onclick="navTo('unos')">
+    <i class="ti ti-circle-plus"></i> Novi exit
+    <span class="nav-badge teal">+</span>
+  </a>
+  <a class="nav-item" data-page="upitnik" onclick="navTo('upitnik')">
+    <i class="ti ti-clipboard-list"></i> Upitnik (štampa)
+  </a>
+
+  <span class="sidebar-label">Po odeljenju</span>
+  <a class="nav-item" data-page="odlasci" data-dept="Korisnička podrška (sve servis, cc, masl)" onclick="navToDept('Korisnička podrška (sve servis, cc, masl)')">
+    <i class="ti ti-headset"></i> Korisnička podrška
+  </a>
+  <a class="nav-item" data-page="odlasci" data-dept="IT / Razvoj" onclick="navToDept('IT / Razvoj')">
+    <i class="ti ti-code"></i> IT / Razvoj
+  </a>
+  <a class="nav-item" data-page="odlasci" data-dept="Sales" onclick="navToDept('Sales')">
+    <i class="ti ti-chart-line"></i> Sales
+  </a>
+  <a class="nav-item" data-page="odlasci" data-dept="Marketing" onclick="navToDept('Marketing')">
+    <i class="ti ti-megaphone"></i> Marketing
+  </a>
+</div>
+
+<!-- ==================== PAGES ==================== -->
+
+<!-- PAGE: DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Exit <span>Dashboard</span></div>
+      <div class="page-meta" id="pageSubtitle">Učitavanje podataka...</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-outline" onclick="navTo('upitnik')"><i class="ti ti-printer" style="font-size:14px"></i> Štampaj upitnik</button>
+      <button class="btn btn-primary" onclick="refreshData()"><i class="ti ti-refresh" style="font-size:14px"></i> Osveži</button>
+    </div>
+  </div>
+
+  <div class="kpi-strip mb24" id="kpiStrip">
+    <div class="kpi-tile"><div class="kpi-label">Ukupno odlazaka</div><div class="kpi-val" id="kpiTotal">—</div><div class="kpi-sub bad" id="kpiTotalSub">—</div></div>
+    <div class="kpi-tile"><div class="kpi-label">Stopa fluktuacije</div><div class="kpi-val" id="kpiRate">—</div><div class="kpi-sub" id="kpiRateSub">—</div><div class="kpi-bar-wrap"><div class="kpi-bar-fill" id="kpiRateBar" style="background:var(--red)"></div></div></div>
+    <div class="kpi-tile"><div class="kpi-label">Prosečan staž</div><div class="kpi-val" id="kpiAvgTenure">—</div><div class="kpi-sub" id="kpiAvgTenureSub">—</div></div>
+    <div class="kpi-tile"><div class="kpi-label">Trošak fluktuacije</div><div class="kpi-val" id="kpiCost">—</div><div class="kpi-sub bad" id="kpiCostSub">—</div></div>
+    <div class="kpi-tile"><div class="kpi-label">NPS (ne preporučuju)</div><div class="kpi-val" id="kpiNps">—</div><div class="kpi-sub" id="kpiNpsSub">—</div></div>
+  </div>
+
+  <div class="signal-box" id="onboardingSignal" style="display:none">
+    <div class="signal-title"><i class="ti ti-alert-octagon"></i> Kritičan signal: Problem onboardinga</div>
+    <div class="signal-body" id="onboardingSignalBody">—</div>
+    <div class="signal-stats">
+      <div class="signal-stat"><div class="signal-stat-val" id="onbCount">—</div><div class="signal-stat-label">odlazaka u &lt;90 dana</div></div>
+      <div class="signal-stat"><div class="signal-stat-val" id="onbPct">—</div><div class="signal-stat-label">od ukupnih</div></div>
+      <div class="signal-stat"><div class="signal-stat-val" id="onbAvg">—</div><div class="signal-stat-label">pros. staž</div></div>
+    </div>
+  </div>
+
+  <div class="insight-row" id="insightRow"></div>
+
+  <div class="grid2 mb16">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="ti ti-chart-bar"></i> Razlozi odlaska</div><a class="card-link" onclick="navTo('trend')">Analiza →</a></div>
+      <div class="card-body"><div class="reason-list" id="reasonList"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="ti ti-building"></i> Rizik po odeljenju</div></div>
+      <div class="card-body">
+        <table class="risk-table w100">
+          <thead><tr><th>Odeljenje</th><th>Fluktuacija</th><th>Rizik</th><th>Gl. razlog</th></tr></thead>
+          <tbody id="deptRiskBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2 mb16">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="ti ti-clock"></i> Staž pri odlasku</div></div>
+      <div class="card-body"><div class="tenure-segs" id="tenureSegs"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="ti ti-pie-chart"></i> Tip odlaska</div></div>
+      <div class="card-body"><div id="typeBreakdown" style="display:flex;flex-direction:column;gap:10px;padding-top:4px"></div></div>
+    </div>
+  </div>
+
+  <!-- Mini trend chart on dashboard -->
+  <div class="card mb16">
+    <div class="card-header"><div class="card-title"><i class="ti ti-trending-up"></i> Mesečni trend odlazaka</div><a class="card-link" onclick="navTo('trend')">Detaljna analiza →</a></div>
+    <div class="card-body"><div id="dashMiniChart"></div></div>
+  </div>
+</div>
+
+<!-- PAGE: ODLASCI -->
+<div class="page" id="page-odlasci">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Svi <span>Odlasci</span></div>
+      <div class="page-meta" id="odlasciMeta">—</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" onclick="navTo('unos')"><i class="ti ti-circle-plus" style="font-size:14px"></i> Novi exit</button>
+    </div>
+  </div>
+
+  <div class="dept-tabs" id="deptTabs">
+    <div class="dept-tab active" data-dept="" onclick="setDeptFilter('')">Sva odeljenja</div>
+    <div class="dept-tab" data-dept="Korisnička podrška (sve servis, cc, masl)" onclick="setDeptFilter('Korisnička podrška (sve servis, cc, masl)')">KP</div>
+    <div class="dept-tab" data-dept="IT / Razvoj" onclick="setDeptFilter('IT / Razvoj')">IT</div>
+    <div class="dept-tab" data-dept="Sales" onclick="setDeptFilter('Sales')">Sales</div>
+    <div class="dept-tab" data-dept="Marketing" onclick="setDeptFilter('Marketing')">Marketing</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><i class="ti ti-list"></i> Zapisi <span id="tableCount" style="font-size:11px;color:var(--slate-3);font-weight:400;text-transform:none;letter-spacing:0;margin-left:4px"></span></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="searchInput" type="text" placeholder="Pretraži..." style="padding:5px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:var(--font);outline:none;width:160px" oninput="renderTable()">
+        <select id="filterType" style="padding:5px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:var(--font);outline:none" onchange="renderTable()">
+          <option value="">Svi tipovi</option>
+          <option value="voljna">Voljna</option>
+          <option value="nedobrovoljna">Nedobrovoljna</option>
+          <option value="istek">Istek ugovora</option>
+        </select>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="exits-table w100">
+        <thead>
+          <tr>
+            <th>Ime</th><th>Odeljenje</th><th>Uloga</th><th>Staž</th><th>Tip</th><th>Razlog</th><th>NPS</th><th>Napomena</th><th>Datum</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="exitsTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: TREND -->
+<div class="page" id="page-trend">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Trend <span>&amp; Analiza</span></div>
+      <div class="page-meta">Mesečni pregled odlazaka i ključnih pokazatelja</div>
+    </div>
+  </div>
+
+  <div class="stat-row" id="trendStats"></div>
+
+  <div class="card mb16">
+    <div class="card-header">
+      <div class="card-title"><i class="ti ti-chart-bar"></i> Odlasci po mesecu</div>
+      <div class="filter-row" style="margin:0;gap:6px">
+        <div class="filter-pill active" data-metric="count" onclick="setTrendMetric('count',this)">Broj</div>
+        <div class="filter-pill" data-metric="type" onclick="setTrendMetric('type',this)">Po tipu</div>
+        <div class="filter-pill" data-metric="dept" onclick="setTrendMetric('dept',this)">Po odeljenju</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="chart-wrap" id="trendChart"></div>
+    </div>
+  </div>
+
+  <div class="grid2 mb16">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="ti ti-chart-donut"></i> Razlozi — detaljna analiza</div></div>
+      <div class="card-body">
+        <div class="reason-list" id="trendReasonList"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="ti ti-users-group"></i> Seniority analiza</div></div>
+      <div class="card-body" id="seniorityChart"></div>
+    </div>
+  </div>
+
+  <div class="grid2 mb16">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="ti ti-star"></i> NPS raspodela</div></div>
+      <div class="card-body" id="npsChart"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="ti ti-map-pin"></i> Lokacija odlazaka</div></div>
+      <div class="card-body" id="locationChart"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: AKCIJE -->
+<div class="page" id="page-akcije">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Preporuke <span>&amp; Akcije</span></div>
+      <div class="page-meta">Automatski generisane iz podataka</div>
+    </div>
+  </div>
+  <div class="actions-panel">
+    <div class="actions-header">
+      <div class="actions-title"><i class="ti ti-bolt"></i> Preporučene akcije</div>
+      <div class="actions-meta" id="actionsCount">—</div>
+    </div>
+    <div id="actionsList"></div>
+  </div>
+  <div class="insight-row" id="insightRow2"></div>
+</div>
+
+<!-- PAGE: UNOS -->
+<div class="page" id="page-unos">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Novi <span>Exit</span></div>
+      <div class="page-meta">Unesite podatke o odlasku zaposlenog</div>
+    </div>
+  </div>
+
+  <div id="formSuccessToast" class="success-toast"><i class="ti ti-circle-check" style="font-size:18px;color:var(--green)"></i> <strong>Exit uspešno dodat!</strong> &nbsp;Podaci su sačuvani.</div>
+
+  <div class="form-section">
+    <div class="form-section-title"><i class="ti ti-user"></i> Podaci o zaposlenom</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Ime i prezime <span class="req">*</span></label>
+        <input type="text" class="form-control" id="fName" placeholder="npr. Marko Marković">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Odeljenje <span class="req">*</span></label>
+        <select class="form-control" id="fDept">
+          <option value="">— Odaberi —</option>
+          <option value="Korisnička podrška (sve servis, cc, masl)">Korisnička podrška</option>
+          <option value="IT / Razvoj">IT / Razvoj</option>
+          <option value="Sales">Sales</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Finansije">Finansije</option>
+          <option value="HR">HR</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Uloga / pozicija</label>
+        <input type="text" class="form-control" id="fRole" placeholder="npr. Operater Niš">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Seniority</label>
+        <select class="form-control" id="fSeniority">
+          <option value="junior">Junior</option>
+          <option value="mid">Mid</option>
+          <option value="senior">Senior</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Datum zapošljavanja <span class="req">*</span></label>
+        <input type="date" class="form-control" id="fHire">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Datum odlaska <span class="req">*</span></label>
+        <input type="date" class="form-control" id="fLeave">
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-title"><i class="ti ti-file-description"></i> Detalji odlaska</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Tip odlaska <span class="req">*</span></label>
+        <div class="radio-group" id="fTypeGroup">
+          <div class="radio-btn active" data-val="voljna" onclick="setRadio('fTypeGroup',this)">Voljna</div>
+          <div class="radio-btn" data-val="nedobrovoljna" onclick="setRadio('fTypeGroup',this)">Nedobrovoljna</div>
+          <div class="radio-btn" data-val="istek" onclick="setRadio('fTypeGroup',this)">Istek ugovora</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Razlog odlaska <span class="req">*</span></label>
+        <select class="form-control" id="fReason">
+          <option value="">— Odaberi —</option>
+          <option value="plata">Plata</option>
+          <option value="bolji-posao">Bolji posao</option>
+          <option value="razvoj">Razvoj karijere</option>
+          <option value="kultura">Kultura kompanije</option>
+          <option value="balans">Work-life balans</option>
+          <option value="uloga">Uloga / zadaci</option>
+          <option value="onboarding">Onboarding</option>
+          <option value="licni">Lični razlozi</option>
+          <option value="drugo">Ostalo</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Da li bi preporučio Cortech?</label>
+        <div class="radio-group" id="fNpsGroup">
+          <div class="radio-btn active" data-val="da" onclick="setRadio('fNpsGroup',this)">Da ✓</div>
+          <div class="radio-btn" data-val="mozda" onclick="setRadio('fNpsGroup',this)">Možda ~</div>
+          <div class="radio-btn" data-val="ne" onclick="setRadio('fNpsGroup',this)">Ne ✗</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nova kompanija (opciono)</label>
+        <input type="text" class="form-control" id="fNewco" placeholder="npr. Telekom Srbija">
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Napomena</label>
+        <textarea class="form-control" id="fNote" placeholder="Slobodan tekst — kontekst odlaska, HR napomene..."></textarea>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-outline" onclick="resetForm()"><i class="ti ti-x" style="font-size:14px"></i> Poništi</button>
+      <button class="btn btn-primary" onclick="submitExit()"><i class="ti ti-circle-check" style="font-size:14px"></i> Sačuvaj exit</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: UPITNIK -->
+<div class="page" id="page-upitnik">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Exit <span>Upitnik</span></div>
+      <div class="page-meta">Daj zaposlenom pre odlaska — anonimno, za internu HR analizu</div>
+    </div>
+  </div>
+  <div class="print-btn-wrap">
+    <button class="btn btn-primary" onclick="window.print()"><i class="ti ti-printer" style="font-size:14px"></i> Štampaj upitnik</button>
+    <button class="btn btn-outline" onclick="window.print()"><i class="ti ti-download" style="font-size:14px"></i> Sačuvaj kao PDF</button>
+  </div>
+
+  <div class="questionnaire-wrap">
+    <div class="q-header">
+      <div class="q-header-logo">
+        <div class="q-logo-sq">
+          <svg width="20" height="18" viewBox="0 0 32 28" fill="none"><circle cx="5" cy="5" r="4" fill="#0D1B2A"/><circle cx="27" cy="5" r="4" fill="#0D1B2A" opacity=".8"/><circle cx="16" cy="23" r="4" fill="#0D1B2A" opacity=".9"/><circle cx="16" cy="14" r="3" fill="#0D1B2A"/><line x1="5" y1="5" x2="16" y2="14" stroke="#0D1B2A" stroke-width="1.5"/><line x1="27" y1="5" x2="16" y2="14" stroke="#0D1B2A" stroke-width="1.5"/><line x1="16" y1="14" x2="16" y2="23" stroke="#0D1B2A" stroke-width="1.5"/></svg>
+        </div>
+        <div>
+          <div class="q-logo-txt">Cortech</div>
+          <div class="q-logo-sub">Human Resources</div>
+        </div>
+      </div>
+      <h1>Exit intervju — upitnik</h1>
+      <p>Hvala vam na saradnji. Vaše mišljenje nam pomaže da poboljšamo radno okruženje. Upitnik je anoniman i koristi se isključivo za internu analizu.</p>
+    </div>
+
+    <div class="q-body">
+      <div style="display:flex;gap:16px;margin-bottom:24px">
+        <div style="flex:1"><label class="q-label">Odeljenje</label><input class="q-input" type="text" placeholder="Vaše odeljenje"></div>
+        <div style="flex:1"><label class="q-label">Uloga / pozicija</label><input class="q-input" type="text" placeholder="Vaša pozicija"></div>
+        <div style="flex:1"><label class="q-label">Datum odlaska</label><input class="q-input" type="text" placeholder="DD.MM.GGGG"></div>
+        <div style="flex:1"><label class="q-label">Dužina radnog odnosa</label><input class="q-input" type="text" placeholder="npr. 14 meseci"></div>
+      </div>
+
+      <div class="q-section">
+        <span class="q-section-num">1</span><span class="q-section-title">Razlog odlaska</span>
+        <div class="q-section-divider"></div>
+        <div class="q-field">
+          <label class="q-label">Koji je primarni razlog vašeg odlaska? (označite sve što se primenjuje)</label>
+          <div class="q-checkbox-group">
+            <label class="q-checkbox-item"><input type="checkbox"> Plata i benefiti nisu u skladu sa tržištem</label>
+            <label class="q-checkbox-item"><input type="checkbox"> Dobio/la sam bolju poslovnu ponudu</label>
+            <label class="q-checkbox-item"><input type="checkbox"> Nedovoljne mogućnosti za razvoj karijere</label>
+            <label class="q-checkbox-item"><input type="checkbox"> Kompanijska kultura ne odgovara mojim vrednostima</label>
+            <label class="q-checkbox-item"><input type="checkbox"> Problem sa work-life balansom</label>
+            <label class="q-checkbox-item"><input type="checkbox"> Nezadovoljstvo ulogom / svakodnevnim zadacima</label>
+            <label class="q-checkbox-item"><input type="checkbox"> Problem sa nadređenim / timom</label>
+            <label class="q-checkbox-item"><input type="checkbox"> Loš onboarding / uvođenje u posao</label>
+            <label class="q-checkbox-item"><input type="checkbox"> Lični razlozi (preseljenje, porodica, zdravlje...)</label>
+            <label class="q-checkbox-item"><input type="checkbox"> Istekao ugovor / projekat završen</label>
+          </div>
+        </div>
+        <div class="q-field">
+          <label class="q-label">Opišite ukratko razlog odlaska (slobodan tekst):</label>
+          <textarea class="q-textarea" rows="3" placeholder="Vaš odgovor..."></textarea>
+        </div>
+      </div>
+
+      <div class="q-section">
+        <span class="q-section-num">2</span><span class="q-section-title">Ocena radnog iskustva</span>
+        <div class="q-section-divider"></div>
+        <p style="font-size:11px;color:var(--slate-3);margin-bottom:14px">Ocenite od 1 (veoma nezadovoljan) do 10 (odlično)</p>
+
+        <div class="q-field">
+          <label class="q-label">Opšte zadovoljstvo radnim mestom</label>
+          <div class="q-scale">
+            <div class="q-scale-btn">1</div><div class="q-scale-btn">2</div><div class="q-scale-btn">3</div><div class="q-scale-btn">4</div><div class="q-scale-btn">5</div>
+            <div class="q-scale-btn">6</div><div class="q-scale-btn">7</div><div class="q-scale-btn">8</div><div class="q-scale-btn">9</div><div class="q-scale-btn">10</div>
+          </div>
+          <div class="q-scale-label"><span>Veoma nezadovoljan</span><span>Odlično</span></div>
+        </div>
+        <div class="q-field">
+          <label class="q-label">Kvalitet onboardinga i uvođenja u posao</label>
+          <div class="q-scale">
+            <div class="q-scale-btn">1</div><div class="q-scale-btn">2</div><div class="q-scale-btn">3</div><div class="q-scale-btn">4</div><div class="q-scale-btn">5</div>
+            <div class="q-scale-btn">6</div><div class="q-scale-btn">7</div><div class="q-scale-btn">8</div><div class="q-scale-btn">9</div><div class="q-scale-btn">10</div>
+          </div>
+          <div class="q-scale-label"><span>Veoma loš</span><span>Odličan</span></div>
+        </div>
+        <div class="q-field">
+          <label class="q-label">Odnos sa neposrednim nadređenim</label>
+          <div class="q-scale">
+            <div class="q-scale-btn">1</div><div class="q-scale-btn">2</div><div class="q-scale-btn">3</div><div class="q-scale-btn">4</div><div class="q-scale-btn">5</div>
+            <div class="q-scale-btn">6</div><div class="q-scale-btn">7</div><div class="q-scale-btn">8</div><div class="q-scale-btn">9</div><div class="q-scale-btn">10</div>
+          </div>
+          <div class="q-scale-label"><span>Veoma loš</span><span>Odličan</span></div>
+        </div>
+        <div class="q-field">
+          <label class="q-label">Kompanijska kultura i vrednosti</label>
+          <div class="q-scale">
+            <div class="q-scale-btn">1</div><div class="q-scale-btn">2</div><div class="q-scale-btn">3</div><div class="q-scale-btn">4</div><div class="q-scale-btn">5</div>
+            <div class="q-scale-btn">6</div><div class="q-scale-btn">7</div><div class="q-scale-btn">8</div><div class="q-scale-btn">9</div><div class="q-scale-btn">10</div>
+          </div>
+          <div class="q-scale-label"><span>Veoma loša</span><span>Odlična</span></div>
+        </div>
+        <div class="q-field">
+          <label class="q-label">Mogućnosti napredovanja i razvoja</label>
+          <div class="q-scale">
+            <div class="q-scale-btn">1</div><div class="q-scale-btn">2</div><div class="q-scale-btn">3</div><div class="q-scale-btn">4</div><div class="q-scale-btn">5</div>
+            <div class="q-scale-btn">6</div><div class="q-scale-btn">7</div><div class="q-scale-btn">8</div><div class="q-scale-btn">9</div><div class="q-scale-btn">10</div>
+          </div>
+          <div class="q-scale-label"><span>Nema ih</span><span>Odlične</span></div>
+        </div>
+        <div class="q-field">
+          <label class="q-label">Fer i konkurentna kompenzacija</label>
+          <div class="q-scale">
+            <div class="q-scale-btn">1</div><div class="q-scale-btn">2</div><div class="q-scale-btn">3</div><div class="q-scale-btn">4</div><div class="q-scale-btn">5</div>
+            <div class="q-scale-btn">6</div><div class="q-scale-btn">7</div><div class="q-scale-btn">8</div><div class="q-scale-btn">9</div><div class="q-scale-btn">10</div>
+          </div>
+          <div class="q-scale-label"><span>Nefer</span><span>Odlična</span></div>
+        </div>
+      </div>
+
+      <div class="q-section">
+        <span class="q-section-num">3</span><span class="q-section-title">Preporuka i povratak</span>
+        <div class="q-section-divider"></div>
+        <div class="q-field">
+          <label class="q-label">Da li biste preporučili Cortech kao poslodavca prijateljima?</label>
+          <div class="q-checkbox-group">
+            <label class="q-checkbox-item"><input type="radio" name="recommend"> Da, bez rezerve</label>
+            <label class="q-checkbox-item"><input type="radio" name="recommend"> Možda, sa rezervom</label>
+            <label class="q-checkbox-item"><input type="radio" name="recommend"> Ne bih preporučio/la</label>
+          </div>
+        </div>
+        <div class="q-field">
+          <label class="q-label">Da li biste razmatrali povratak u Cortech u budućnosti?</label>
+          <div class="q-checkbox-group">
+            <label class="q-checkbox-item"><input type="radio" name="return"> Da, pod pravim uslovima</label>
+            <label class="q-checkbox-item"><input type="radio" name="return"> Nisam siguran/na</label>
+            <label class="q-checkbox-item"><input type="radio" name="return"> Ne</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-section">
+        <span class="q-section-num">4</span><span class="q-section-title">Šta biste promenili?</span>
+        <div class="q-section-divider"></div>
+        <div class="q-field">
+          <label class="q-label">Šta je kompanija mogla da uradi drugačije da biste ostali?</label>
+          <textarea class="q-textarea" rows="4" placeholder="Vaš odgovor..."></textarea>
+        </div>
+        <div class="q-field">
+          <label class="q-label">Šta vam se najviše sviđalo u Cortechovom radnom okruženju?</label>
+          <textarea class="q-textarea" rows="3" placeholder="Vaš odgovor..."></textarea>
+        </div>
+        <div class="q-field">
+          <label class="q-label">Postoji li nešto što HR / menadžment treba da zna?</label>
+          <textarea class="q-textarea" rows="3" placeholder="Vaš odgovor... (opciono)"></textarea>
+        </div>
+      </div>
+
+      <div class="q-footer">
+        <p>Ovaj upitnik je anoniman. Popunjeni upitnik predajte HR-u ili ubacite u koverat. Hvala na iskrenosti.</p>
+        <div style="text-align:right">
+          <div style="font-size:11px;color:var(--slate-3)">Datum popunjavanja</div>
+          <div style="border-bottom:1px solid #333;width:140px;height:24px;margin-top:6px"></div>
+          <div style="font-size:10px;color:var(--slate-4);margin-top:6px">Cortech · HR / Exit Metrika</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /layout -->
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+let DATA = {"settings":{"company":"Cortech","total":250,"salary":"13000","target":12,"repcost":"50","period":12},"exits":[{"id":1782210358373,"name":"Aleksa Vlatković","dept":"IT / Razvoj","role":"IT Help Desk","hire":"2025-11-05","leave":"2026-07-17","type":"voljna","newco":"","seniority":"junior","reason":"razvoj","nps":"da","note":"","createdAt":"2026-06-23T10:25:58.373Z"},{"id":1782210292223,"name":"Stefan Živanović","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater Ub","hire":"2026-01-12","leave":"2026-05-31","type":"voljna","newco":"","seniority":"junior","reason":"bolji-posao","nps":"mozda","note":"","createdAt":"2026-06-23T10:24:52.223Z"},{"id":1782210196783,"name":"Marko Stanojević","dept":"Sales","role":"Sales Niš","hire":"2026-03-17","leave":"2026-06-16","type":"voljna","newco":"","seniority":"junior","reason":"plata","nps":"mozda","note":"","createdAt":"2026-06-23T10:23:16.783Z"},{"id":1782210121534,"name":"Nikola Lazić","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater","hire":"2024-05-20","leave":"2026-05-20","type":"voljna","newco":"","seniority":"junior","reason":"plata","nps":"mozda","note":"","createdAt":"2026-06-23T10:22:01.534Z"},{"id":1782209936095,"name":"Miloš Pavlović","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater Ub","hire":"2026-02-18","leave":"2026-05-17","type":"nedobrovoljna","newco":"","seniority":"junior","reason":"drugo","nps":"mozda","note":"Loša disciplina.","createdAt":"2026-06-23T10:18:56.095Z"},{"id":1782209823383,"name":"Mateja Ilić","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater Niš","hire":"2026-02-11","leave":"2026-05-15","type":"nedobrovoljna","newco":"","seniority":"junior","reason":"balans","nps":"mozda","note":"","createdAt":"2026-06-23T10:17:03.383Z"},{"id":1782209763720,"name":"Setefan Mijailović","dept":"IT / Razvoj","role":"QA","hire":"2020-06-01","leave":"2026-06-01","type":"nedobrovoljna","newco":"","seniority":"senior","reason":"drugo","nps":"ne","note":"Štele je već dugo bio problematičan","createdAt":"2026-06-23T10:16:03.720Z"},{"id":1782209697358,"name":"Nemanja Todorović","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater","hire":"2024-03-04","leave":"2026-05-03","type":"voljna","newco":"","seniority":"junior","reason":"plata","nps":"da","note":"","createdAt":"2026-06-23T10:14:57.358Z"},{"id":1782209598981,"name":"Tamara Radosavljević","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater","hire":"2025-12-09","leave":"2026-05-15","type":"voljna","newco":"","seniority":"junior","reason":"bolji-posao","nps":"mozda","note":"","createdAt":"2026-06-23T10:13:18.981Z"},{"id":1782209491511,"name":"Dimitrije Jakovljević","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater","hire":"2024-09-16","leave":"2026-01-31","type":"voljna","newco":"","seniority":"junior","reason":"bolji-posao","nps":"mozda","note":"","createdAt":"2026-06-23T10:11:31.511Z"},{"id":1782209289293,"name":"Anđela Đurđević","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater ","hire":"2025-11-03","leave":"2026-05-05","type":"voljna","newco":"","seniority":"junior","reason":"plata","nps":"mozda","note":"","createdAt":"2026-06-23T10:08:09.293Z"},{"id":1782207747796,"name":"Ilija Arsenijević","dept":"IT / Razvoj","role":"DEA","hire":"2026-04-01","leave":"2026-05-01","type":"nedobrovoljna","newco":"","seniority":"junior","reason":"drugo","nps":"mozda","note":"Istekom- nije imao dobre rezultate","createdAt":"2026-06-23T09:42:27.796Z"},{"id":1782207655071,"name":"Petar Vučković","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater Niš","hire":"2026-02-11","leave":"2026-04-17","type":"voljna","newco":"","seniority":"junior","reason":"licni","nps":"mozda","note":"","createdAt":"2026-06-23T09:40:55.071Z"},{"id":1782207583484,"name":"Mihajlo Stojković","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater Niš","hire":"2025-01-24","leave":"2026-04-03","type":"voljna","newco":"","seniority":"junior","reason":"uloga","nps":"mozda","note":"","createdAt":"2026-06-23T09:39:43.484Z"},{"id":1782207498889,"name":"Aleksandar Džigurski","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater Ub","hire":"2025-10-06","leave":"2026-02-13","type":"voljna","newco":"","seniority":"junior","reason":"licni","nps":"mozda","note":"","createdAt":"2026-06-23T09:38:18.889Z"},{"id":1782207430180,"name":"Stefan Božilović","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater Niš","hire":"2024-06-19","leave":"2026-01-30","type":"voljna","newco":"","seniority":"mid","reason":"balans","nps":"mozda","note":"","createdAt":"2026-06-23T09:37:10.180Z"},{"id":1782207303631,"name":"Lazar Krstić","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater","hire":"2024-10-28","leave":"2026-01-27","type":"nedobrovoljna","newco":"","seniority":"junior","reason":"drugo","nps":"mozda","note":"Otkaz zbog nepoštovanja discipline.","createdAt":"2026-06-23T09:35:03.631Z"},{"id":1782207205739,"name":"Lazar Stanković","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater Niš","hire":"2025-12-15","leave":"2026-01-24","type":"voljna","newco":"","seniority":"junior","reason":"onboarding","nps":"mozda","note":"","createdAt":"2026-06-23T09:33:25.739Z"},{"id":1782207072545,"name":"Radmila Vujetić","dept":"Sales","role":"Sales Representative","hire":"2024-12-30","leave":"2026-01-05","type":"istek","newco":"","seniority":"junior","reason":"drugo","nps":"mozda","note":"","createdAt":"2026-06-23T09:30:45.000Z"},{"id":1782206900000,"name":"Vuk Đorđević","dept":"IT / Razvoj","role":"Backend Dev","hire":"2023-05-01","leave":"2026-04-01","type":"voljna","newco":"","seniority":"mid","reason":"razvoj","nps":"ne","note":"","createdAt":"2026-06-23T09:25:00.000Z"},{"id":1782206500000,"name":"Ana Jovanović","dept":"Marketing","role":"Social Media Manager","hire":"2024-02-01","leave":"2026-01-15","type":"voljna","newco":"","seniority":"junior","reason":"kultura","nps":"ne","note":"","createdAt":"2026-06-23T09:10:00.000Z"},{"id":1782205231630,"name":"Uroš Savić","dept":"IT / Razvoj","role":"PM","hire":"2023-03-01","leave":"2026-06-05","type":"voljna","newco":"","seniority":"mid","reason":"onboarding","nps":"ne","note":"Loš onboarding na PM poziciju","createdAt":"2026-06-23T09:00:31.630Z"},{"id":1782204951320,"name":"Anđela Kidišević","dept":"IT / Razvoj","role":"DevOps","hire":"2024-06-20","leave":"2026-06-30","type":"voljna","newco":"","seniority":"mid","reason":"uloga","nps":"ne","note":"Nerazumevanje sa mentorom. Loš onboarding u Dev.","createdAt":"2026-06-23T08:55:51.320Z"},{"id":1782204673103,"name":"Aleksandar Vukićević","dept":"Marketing","role":"Content Writer","hire":"2023-06-02","leave":"2026-05-16","type":"voljna","newco":"","seniority":"mid","reason":"uloga","nps":"ne","note":"Radi se od danas za sutra, nerealni rokovi.","createdAt":"2026-06-23T08:51:13.103Z"},{"id":1782204103177,"name":"Nikola Timiljić","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater Niš","hire":"2026-01-12","leave":"2026-04-11","type":"voljna","newco":"","seniority":"junior","reason":"drugo","nps":"ne","note":"Želi da završi fakultet.","createdAt":"2026-06-23T08:41:43.177Z"},{"id":1782203908969,"name":"Andrija Rakić","dept":"Sales","role":"Sales Representative","hire":"2023-07-07","leave":"2026-05-14","type":"voljna","newco":"","seniority":"mid","reason":"kultura","nps":"ne","note":"Prezasićenost, loša radna atmosfera.","createdAt":"2026-06-23T08:38:28.969Z"},{"id":1782203750372,"name":"Arsenije Simonović","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater Niš","hire":"2024-09-09","leave":"2026-03-27","type":"voljna","newco":"","seniority":"junior","reason":"plata","nps":"ne","note":"Loš odnos sa nadređenim.","createdAt":"2026-06-23T08:35:50.372Z"},{"id":1782203559216,"name":"Marija Stanković","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Servis Niš","hire":"2025-12-15","leave":"2026-03-12","type":"voljna","newco":"","seniority":"junior","reason":"onboarding","nps":"ne","note":"","createdAt":"2026-06-23T08:32:39.216Z"},{"id":1782203410069,"name":"Mladen Dimić","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater Niš","hire":"2025-12-31","leave":"2026-02-02","type":"voljna","newco":"","seniority":"junior","reason":"onboarding","nps":"ne","note":"","createdAt":"2026-06-23T08:30:10.069Z"},{"id":1782202990078,"name":"Nenad Avramović","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater","hire":"2025-08-10","leave":"2026-03-31","type":"voljna","newco":"","seniority":"junior","reason":"razvoj","nps":"mozda","note":"Našao bolji posao u struci.","createdAt":"2026-06-23T08:23:10.078Z"},{"id":1782201526463,"name":"Dimitrije Stevanović","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater","hire":"2024-07-09","leave":"2026-03-27","type":"voljna","newco":"","seniority":"mid","reason":"licni","nps":"mozda","note":"","createdAt":"2026-06-23T07:58:46.463Z"},{"id":1782201111348,"name":"Miloš Rančić","dept":"Sales","role":"Sales Representative","hire":"2025-12-08","leave":"2026-03-06","type":"voljna","newco":"","seniority":"mid","reason":"licni","nps":"ne","note":"","createdAt":"2026-06-23T07:51:51.348Z"},{"id":1782200735754,"name":"Vujica Ranković","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater Niš","hire":"2024-08-13","leave":"2026-03-10","type":"voljna","newco":"","seniority":"junior","reason":"kultura","nps":"ne","note":"Jako nezadovoljan kulturom.","createdAt":"2026-06-23T07:45:35.754Z"},{"id":1782200414600,"name":"Miloš Stanisavljević","dept":"Sales","role":"Sales Representative","hire":"2025-10-01","leave":"2026-02-02","type":"voljna","newco":"","seniority":"junior","reason":"licni","nps":"mozda","note":"","createdAt":"2026-06-23T07:40:14.600Z"},{"id":1782200251891,"name":"Željko Vukićević","dept":"Marketing","role":"Digital Marketing Specialist","hire":"2025-12-01","leave":"2026-02-28","type":"voljna","newco":"","seniority":"junior","reason":"licni","nps":"da","note":"","createdAt":"2026-06-23T07:37:31.891Z"},{"id":1782200151975,"name":"Jovana Ćirković","dept":"Marketing","role":"Junior Digital Marketing Specialist","hire":"2024-09-01","leave":"2026-02-25","type":"voljna","newco":"","seniority":"junior","reason":"kultura","nps":"ne","note":"Jako nezadovoljna kulturom i top menadžmentom.","createdAt":"2026-06-23T07:35:51.975Z"},{"id":1782199981212,"name":"Mina Milojević","dept":"Korisnička podrška (sve servis, cc, masl)","role":"Operater Russian","hire":"2022-10-10","leave":"2026-02-27","type":"voljna","newco":"","seniority":"mid","reason":"licni","nps":"mozda","note":"Loš odnos sa nadređenim.","createdAt":"2026-06-23T07:33:01.212Z"}],"depts":[{"name":"Sales","headcount":"30","risk":"medium","reason":"Plata + pritisak","avgTenure":"8 mes"},{"name":"Korisnička podrška (sve servis, cc, masl)","headcount":"223","risk":"high","reason":"Burnout","avgTenure":"11 mes"},{"name":"IT / Razvoj","headcount":"50","risk":"medium","reason":"Razvoj karijere","avgTenure":"18 mes"},{"name":"Marketing","headcount":"21","risk":"medium","reason":"Kultura","avgTenure":"22 mes"},{"name":"Finansije","headcount":"7","risk":"low","reason":"Bolji uslovi","avgTenure":"31 mes"},{"name":"HR","headcount":"5","risk":"low","reason":"Razvoj","avgTenure":"20 mes"}]};
+
+const REASON_LABELS = {
+  'plata':'Plata','bolji-posao':'Bolji posao','razvoj':'Razvoj karijere',
+  'kultura':'Kultura','balans':'Work-life balans','uloga':'Uloga/zadaci',
+  'onboarding':'Onboarding','licni':'Lični razlozi','drugo':'Ostalo'
+};
+const MONTHS_SR = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Avg','Sep','Okt','Nov','Dec'];
+
+let currentDeptFilter = '';
+let currentTrendMetric = 'count';
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function navTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('[data-page="'+page+'"]').forEach(n => {
+    if(!n.dataset.dept) n.classList.add('active');
+  });
+  if(page === 'trend') renderTrend();
+  if(page === 'odlasci') { currentDeptFilter=''; renderTable(); updateDeptTabs(); }
+  if(page === 'akcije') renderActions2();
+}
+
+function navToDept(dept) {
+  currentDeptFilter = dept;
+  navTo('odlasci');
+  updateDeptTabs();
+  renderTable();
+}
+
+function setDeptFilter(dept) {
+  currentDeptFilter = dept;
+  updateDeptTabs();
+  renderTable();
+}
+
+function updateDeptTabs() {
+  document.querySelectorAll('.dept-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.dept === currentDeptFilter);
+  });
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function tenureDays(h, l) {
+  return Math.round((new Date(l) - new Date(h)) / 86400000);
+}
+function fmtDays(d) {
+  if(d < 30) return d+'d';
+  if(d < 365) return Math.round(d/30)+'m';
+  return (d/365).toFixed(1)+'g';
+}
+function fmtEUR(n) {
+  if(n >= 1000000) return '€'+(n/1000000).toFixed(1)+'M';
+  if(n >= 1000) return '€'+(n/1000).toFixed(0)+'K';
+  return '€'+n;
+}
+
+// ============================================================
+// RENDER ALL
+// ============================================================
+function renderAll() {
+  const exits = DATA.exits;
+  const total = exits.length;
+
+  // Sidebar badges
+  document.getElementById('sidebarTotal').textContent = total;
+  document.getElementById('lastUpdated').textContent = 'Ažurirano: ' + new Date().toLocaleTimeString('sr-RS');
+
+  const s = DATA.settings;
+  const rate = (total / parseInt(s.total) * 100).toFixed(1);
+  const avgDays = exits.reduce((a,e) => a + tenureDays(e.hire,e.leave), 0) / total;
+  const cost = total * parseInt(s.salary) * (parseFloat(s.repcost)/100);
+  const npeNe = exits.filter(e => e.nps === 'ne').length;
+
+  document.getElementById('pageSubtitle').textContent = `Cortech · ${total} odlazaka · period od 12 meseci`;
+
+  // KPIs
+  document.getElementById('kpiTotal').textContent = total;
+  document.getElementById('kpiTotalSub').textContent = `↑ vs. cilj ${s.target}%`;
+  document.getElementById('kpiRate').textContent = rate + '%';
+  document.getElementById('kpiRateSub').className = 'kpi-sub ' + (parseFloat(rate) > parseFloat(s.target) ? 'bad' : 'good');
+  document.getElementById('kpiRateSub').textContent = parseFloat(rate) > parseFloat(s.target) ? `↑ Iznad cilja ${s.target}%` : `✓ Cilj ${s.target}%`;
+  document.getElementById('kpiRateBar').style.width = Math.min(parseFloat(rate)/30*100, 100) + '%';
+  document.getElementById('kpiAvgTenure').textContent = Math.round(avgDays/30) + 'mes';
+  document.getElementById('kpiAvgTenureSub').className = 'kpi-sub ' + (avgDays < 365 ? 'warn' : 'good');
+  document.getElementById('kpiAvgTenureSub').textContent = avgDays < 365 ? '⚠ Kratko' : '✓ OK';
+  document.getElementById('kpiCost').textContent = fmtEUR(cost);
+  document.getElementById('kpiCostSub').textContent = `≈ ${fmtEUR(cost/total)} / odlazak`;
+  document.getElementById('kpiNps').textContent = npeNe + ' (' + Math.round(npeNe/total*100) + '%)';
+  document.getElementById('kpiNpsSub').className = 'kpi-sub ' + (npeNe/total > 0.3 ? 'bad' : 'warn');
+  document.getElementById('kpiNpsSub').textContent = 'ne preporučuju';
+
+  // Onboarding signal
+  const onbExits = exits.filter(e => tenureDays(e.hire,e.leave) < 90);
+  const onbPct = Math.round(onbExits.length/total*100);
+  if(onbPct >= 15) {
+    document.getElementById('onboardingSignal').style.display = 'block';
+    document.getElementById('onboardingSignalBody').textContent = `${onbPct}% odlazaka desilo se unutar prvih 90 dana. Ovo ukazuje na ozbiljan problem onboardinga koji zahteva hitnu pažnju menadžmenta.`;
+    document.getElementById('onbCount').textContent = onbExits.length;
+    document.getElementById('onbPct').textContent = onbPct + '%';
+    const onbAvg = onbExits.reduce((a,e) => a+tenureDays(e.hire,e.leave),0)/onbExits.length;
+    document.getElementById('onbAvg').textContent = Math.round(onbAvg) + 'd';
+  }
+
+  // Insight chips
+  const kpDept = exits.filter(e=>e.dept.includes('Korisnička'));
+  const plataCnt = exits.filter(e=>e.reason==='plata').length;
+  const kulturaCnt = exits.filter(e=>e.reason==='kultura').length;
+  const chips = [
+    {cls:'red', icon:'ti-alert-triangle', txt:`<strong>${Math.round(kpDept.length/total*100)}%</strong> odlazaka iz KP — kritično odeljenje`},
+    {cls:'amber', icon:'ti-cash', txt:`<strong>${plataCnt}</strong> odlazaka zbog plate (${Math.round(plataCnt/total*100)}%)`},
+    onbPct >= 15 ? {cls:'red', icon:'ti-door-exit', txt:`<strong>${onbExits.length}</strong> odlazaka unutar 90 dana`} : null,
+    kulturaCnt >= 3 ? {cls:'amber', icon:'ti-building-community', txt:`<strong>${kulturaCnt}</strong> odlazaka zbog kulture kompanije`} : null,
+  ].filter(Boolean);
+
+  const iRow = document.getElementById('insightRow');
+  iRow.innerHTML = chips.map(c => `<div class="insight-chip ${c.cls}"><i class="ti ${c.icon}"></i> ${c.txt}</div>`).join('');
+
+  // Actions
+  renderActionsList('actionsList', 'actionsCount', 'sidebarActions');
+
+  // Reasons
+  const reasonCount = {};
+  exits.forEach(e => { reasonCount[e.reason] = (reasonCount[e.reason]||0)+1; });
+  const sortedReasons = Object.entries(reasonCount).sort((a,b)=>b[1]-a[1]);
+  const maxR = sortedReasons[0][1];
+  const COLORS = ['#E53935','#F59E0B','#1ABCB4','#2563EB','#7C3AED','#10B981','#475569','#00D4E8','#94A3B8'];
+  const rlist = document.getElementById('reasonList');
+  rlist.innerHTML = sortedReasons.map(([k,v], i) => `
+    <div class="reason-row">
+      <div class="reason-label">${REASON_LABELS[k]||k}</div>
+      <div class="reason-bar-wrap"><div class="reason-bar" style="width:${v/maxR*100}%;background:${COLORS[i%COLORS.length]}"></div></div>
+      <div class="reason-count">${v}</div>
+      <div class="reason-pct">${Math.round(v/total*100)}%</div>
+    </div>`).join('');
+
+  // Dept risk
+  const deptExitMap = {};
+  exits.forEach(e => { deptExitMap[e.dept]=(deptExitMap[e.dept]||0)+1; });
+  const tbody = document.getElementById('deptRiskBody');
+  tbody.innerHTML = DATA.depts.map(d => {
+    const exCount = deptExitMap[d.name] || 0;
+    const hc = parseInt(d.headcount);
+    const rateD = (exCount/hc*100).toFixed(0);
+    const barCol = d.risk==='high'?'var(--red)':d.risk==='medium'?'var(--amber)':'var(--green)';
+    const dName = d.name.includes('Korisnička')?'Korisnička podrška':d.name;
+    return `<tr>
+      <td><strong style="font-weight:500">${dName}</strong></td>
+      <td><div class="turnover-bar"><div class="tb-track"><div class="tb-fill" style="width:${Math.min(parseInt(rateD),100)}%;background:${barCol}"></div></div><span style="font-family:var(--mono);font-size:11px">${rateD}%</span></div></td>
+      <td><span class="risk-badge ${d.risk}"><span class="risk-dot"></span>${d.risk==='high'?'Visok':d.risk==='medium'?'Srednji':'Nizak'}</span></td>
+      <td style="font-size:11px;color:var(--slate-2)">${d.reason}</td>
+    </tr>`;
+  }).join('');
+
+  // Tenure segments
+  const under3m = exits.filter(e=>tenureDays(e.hire,e.leave)<90).length;
+  const m3to6 = exits.filter(e=>{const d=tenureDays(e.hire,e.leave);return d>=90&&d<180;}).length;
+  const m6to12 = exits.filter(e=>{const d=tenureDays(e.hire,e.leave);return d>=180&&d<365;}).length;
+  const over1y = exits.filter(e=>tenureDays(e.hire,e.leave)>=365).length;
+  document.getElementById('tenureSegs').innerHTML = `
+    <div class="tenure-seg"><div class="tenure-seg-val">${under3m}</div><div class="tenure-seg-label">&lt; 3 mes</div><div class="tenure-seg-sub danger">Kritično</div></div>
+    <div class="tenure-seg"><div class="tenure-seg-val">${m3to6}</div><div class="tenure-seg-label">3–6 mes</div><div class="tenure-seg-sub warn">Problem</div></div>
+    <div class="tenure-seg"><div class="tenure-seg-val">${m6to12}</div><div class="tenure-seg-label">6–12 mes</div><div class="tenure-seg-sub warn">Prati</div></div>
+    <div class="tenure-seg"><div class="tenure-seg-val">${over1y}</div><div class="tenure-seg-label">&gt; 1 god</div><div class="tenure-seg-sub ok">Normalno</div></div>`;
+
+  // Type breakdown
+  const vC=exits.filter(e=>e.type==='voljna').length;
+  const nC=exits.filter(e=>e.type==='nedobrovoljna').length;
+  const iC=exits.filter(e=>e.type==='istek').length;
+  document.getElementById('typeBreakdown').innerHTML = [
+    {label:'Voljna',count:vC,color:'var(--amber)'},
+    {label:'Nedobrovoljna',count:nC,color:'var(--red)'},
+    {label:'Istek ugovora',count:iC,color:'var(--blue)'},
+  ].map(t=>`<div style="display:flex;align-items:center;gap:10px">
+    <div style="width:11px;height:11px;border-radius:3px;background:${t.color};flex-shrink:0"></div>
+    <div style="flex:1;font-size:12px">${t.label}</div>
+    <div style="font-family:var(--mono);font-size:12px;font-weight:500">${t.count}</div>
+    <div style="font-size:11px;color:var(--slate-3);min-width:30px;text-align:right">${Math.round(t.count/total*100)}%</div>
+    <div style="width:80px;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+      <div style="height:4px;background:${t.color};border-radius:2px;width:${t.count/total*100}%"></div>
+    </div>
+  </div>`).join('');
+
+  // Mini chart on dashboard
+  renderMiniBarChart('dashMiniChart');
+  renderTable();
+}
+
+// ============================================================
+// ACTIONS
+// ============================================================
+function renderActionsList(listId, countId, badgeId) {
+  const exits = DATA.exits;
+  const total = exits.length;
+  const plataCnt = exits.filter(e=>e.reason==='plata').length;
+  const onbCnt = exits.filter(e=>tenureDays(e.hire,e.leave)<90).length;
+  const kulturaCnt = exits.filter(e=>e.reason==='kultura').length;
+  const kpExits = exits.filter(e=>e.dept.includes('Korisnička'));
+  const kpHc = 223;
+  const kpRate = (kpExits.length/kpHc*100).toFixed(0);
+
+  const actions = [
+    {
+      level:'urgent', icon:'ti-cash', priority:'p1',
+      title:`Revizija plate za operaterska mesta — ${plataCnt} odlazaka zbog plate`,
+      desc:`${Math.round(plataCnt/total*100)}% zaposlenih je otišlo zbog plate. Preporučujemo analizu tržišnih plata za operatere i immediate salary review.`,
+      tag:'urgent', tagTxt:'HITNO · HR + Finansije'
+    },
+    {
+      level:'urgent', icon:'ti-headset', priority:'p1',
+      title:`Korisnička podrška: ${kpRate}% fluktuacija — plan zadržavanja`,
+      desc:`KP ima najvišu stopu odlazaka. Potrebna je hitna analiza burnout faktora i uvođenje retention programa (benefiti, rotacija, mentorstvo).`,
+      tag:'urgent', tagTxt:'HITNO · Direktor KP'
+    },
+    {
+      level:'warn', icon:'ti-door-exit', priority:'p2',
+      title:`${onbCnt} odlazaka unutar 90 dana — onboarding program`,
+      desc:`${Math.round(onbCnt/total*100)}% odlazaka dešava se u periodu onboardinga. Strukturisan 90-dnevni plan uvođenja može drastično smanjiti ovaj broj.`,
+      tag:'warn', tagTxt:'VISOK · HR'
+    },
+    kulturaCnt >= 3 ? {
+      level:'warn', icon:'ti-building-community', priority:'p2',
+      title:`${kulturaCnt} odlazaka zbog kulture — engagement survey`,
+      desc:`Kultura kao razlog za odlazak je alarm. Preporučujemo anonimni engagement survey i radionice sa menadžerima.`,
+      tag:'warn', tagTxt:'VISOK · HR + Menadžment'
+    } : null,
+    {
+      level:'info', icon:'ti-chart-line', priority:'p3',
+      title:`Sales: Prati pipelineom — rizik gubitka`,
+      desc:`Mid-seniority zaposleni u Salesu odlaze. Monitor metrics i consider loyalty bonus za senior reps.`,
+      tag:'info', tagTxt:'SREDNJI · Sales menadžer'
+    },
+    {
+      level:'good', icon:'ti-trending-down', priority:'p3',
+      title:'Finansije i HR: Niska fluktuacija — primer dobre prakse',
+      desc:`Oba odeljenja imaju nizak rizik. Analizujte šta rade dobro i primeni na ostale timove.`,
+      tag:'good', tagTxt:'INFO · HR'
+    },
+  ].filter(Boolean);
+
+  const iconMap={urgent:'var(--red)',warn:'var(--amber)',info:'#93C5FD',good:'#6EE7B7'};
+  document.getElementById(listId).innerHTML = actions.map(a=>`
+    <div class="action-item">
+      <div class="action-icon ${a.level}"><i class="ti ${a.icon}"></i></div>
+      <div class="action-body">
+        <div class="action-title-txt">${a.title}</div>
+        <div class="action-desc">${a.desc}</div>
+        <div class="action-tag ${a.tag}">${a.tagTxt}</div>
+      </div>
+      <div class="priority-chip ${a.priority}">${a.priority==='p1'?'P1':a.priority==='p2'?'P2':'P3'}</div>
+    </div>`).join('');
+
+  if(countId) document.getElementById(countId).textContent = actions.length + ' akcija';
+  if(badgeId) document.getElementById(badgeId).textContent = actions.filter(a=>a.priority==='p1'||a.priority==='p2').length;
+}
+
+function renderActions2() {
+  renderActionsList('actionsList', 'actionsCount', null);
+  // also render insights
+  const exits = DATA.exits;
+  const total = exits.length;
+  const onbCnt = exits.filter(e=>tenureDays(e.hire,e.leave)<90).length;
+  const chips = [
+    {cls:'teal',icon:'ti-info-circle',txt:'Preporuke su automatski generisane iz vaših podataka'},
+    {cls:'amber',icon:'ti-alert-triangle',txt:`Akcije P1 i P2 zahtevaju hitno delovanje`},
+    {cls:'red',icon:'ti-door-exit',txt:`${onbCnt} odlazaka u prvih 90 dana — onboarding`},
+  ];
+  const r2 = document.getElementById('insightRow2');
+  if(r2) r2.innerHTML = chips.map(c=>`<div class="insight-chip ${c.cls}"><i class="ti ${c.icon}"></i> ${c.txt}</div>`).join('');
+}
+
+// ============================================================
+// MINI BAR CHART (dashboard + trend)
+// ============================================================
+function getMonthlyData() {
+  const exits = DATA.exits;
+  const monthly = {};
+  exits.forEach(e => {
+    const d = new Date(e.leave);
+    const key = d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0');
+    if(!monthly[key]) monthly[key]={count:0,voljna:0,nedobrovoljna:0,istek:0,depts:{}};
+    monthly[key].count++;
+    monthly[key][e.type]=(monthly[key][e.type]||0)+1;
+    const ds = e.dept.includes('Korisnička')?'KP':e.dept.includes('IT')?'IT':e.dept.includes('Sales')?'Sales':e.dept.includes('Marketing')?'Mkt':'Ostalo';
+    monthly[key].depts[ds]=(monthly[key].depts[ds]||0)+1;
+  });
+  const keys = Object.keys(monthly).sort();
+  return {keys, monthly};
+}
+
+function renderMiniBarChart(containerId) {
+  const {keys, monthly} = getMonthlyData();
+  const container = document.getElementById(containerId);
+  if(!container) return;
+  const maxVal = Math.max(...keys.map(k=>monthly[k].count));
+  const W=680, H=120, PAD_L=30, PAD_B=22, BAR_W=Math.max(18, Math.floor((W-PAD_L)/keys.length)-4);
+
+  let svg = `<svg width="100%" viewBox="0 0 ${W} ${H+PAD_B}" class="chart-svg">`;
+  // grid lines
+  [0,Math.ceil(maxVal/2),maxVal].forEach(v => {
+    const y = H - (v/maxVal)*(H-10);
+    svg += `<line x1="${PAD_L}" y1="${y}" x2="${W}" y2="${y}" stroke="var(--border)" stroke-width="1"/>`;
+    svg += `<text x="${PAD_L-4}" y="${y+4}" font-size="9" fill="var(--slate-3)" text-anchor="end" font-family="monospace">${v}</text>`;
+  });
+
+  keys.forEach((k, i) => {
+    const v = monthly[k].count;
+    const barH = Math.max(4, (v/maxVal)*(H-10));
+    const x = PAD_L + i*((W-PAD_L)/keys.length) + 2;
+    const y = H - barH;
+    const [yr, mo] = k.split('-');
+    svg += `<g class="chart-bar-group">
+      <rect class="chart-bar-rect" x="${x}" y="${y}" width="${BAR_W}" height="${barH}" rx="3" fill="var(--teal)" opacity=".85"/>
+      <text x="${x+BAR_W/2}" y="${H+14}" font-size="9" fill="var(--slate-3)" text-anchor="middle" font-family="monospace">${MONTHS_SR[parseInt(mo)-1]}</text>
+      <text x="${x+BAR_W/2}" y="${y-4}" font-size="9" fill="var(--slate-2)" text-anchor="middle" font-family="monospace" font-weight="500">${v}</text>
+    </g>`;
+  });
+  svg += '</svg>';
+  container.innerHTML = svg;
+}
+
+// ============================================================
+// TREND PAGE
+// ============================================================
+function renderTrend() {
+  const exits = DATA.exits;
+  const total = exits.length;
+  const {keys, monthly} = getMonthlyData();
+
+  // Stat boxes
+  const counts = keys.map(k=>monthly[k].count);
+  const maxMo = Math.max(...counts), minMo = Math.min(...counts);
+  const avgMo = (counts.reduce((a,b)=>a+b,0)/counts.length).toFixed(1);
+  const lastMo = counts[counts.length-1], prevMo = counts[counts.length-2]||0;
+  const trend = lastMo - prevMo;
+  document.getElementById('trendStats').innerHTML = `
+    <div class="stat-box"><div class="stat-box-val">${total}</div><div class="stat-box-label">Ukupno</div></div>
+    <div class="stat-box"><div class="stat-box-val">${maxMo}</div><div class="stat-box-label">Maks. u mesecu</div></div>
+    <div class="stat-box"><div class="stat-box-val">${avgMo}</div><div class="stat-box-label">Prosek / mesec</div></div>
+    <div class="stat-box"><div class="stat-box-val" style="color:${trend>0?'var(--red)':'var(--green)'}">${trend>0?'+':''}${trend}</div><div class="stat-box-label">Trend (prošli mes)</div><div class="stat-box-trend ${trend>0?'up':'down'}">${trend>0?'↑ Rast':'↓ Pad'}</div></div>`;
+
+  renderTrendChart();
+
+  // Reasons trend list
+  const reasonCount = {};
+  exits.forEach(e => { reasonCount[e.reason] = (reasonCount[e.reason]||0)+1; });
+  const sortedReasons = Object.entries(reasonCount).sort((a,b)=>b[1]-a[1]);
+  const maxR = sortedReasons[0][1];
+  const COLORS = ['#E53935','#F59E0B','#1ABCB4','#2563EB','#7C3AED','#10B981','#475569','#00D4E8'];
+  document.getElementById('trendReasonList').innerHTML = sortedReasons.map(([k,v],i) => `
+    <div class="reason-row">
+      <div class="reason-label">${REASON_LABELS[k]||k}</div>
+      <div class="reason-bar-wrap"><div class="reason-bar" style="width:${v/maxR*100}%;background:${COLORS[i%COLORS.length]}"></div></div>
+      <div class="reason-count">${v}</div>
+      <div class="reason-pct">${Math.round(v/total*100)}%</div>
+    </div>`).join('');
+
+  // Seniority
+  const junCnt=exits.filter(e=>e.seniority==='junior').length;
+  const midCnt=exits.filter(e=>e.seniority==='mid').length;
+  const senCnt=exits.filter(e=>e.seniority==='senior').length;
+  document.getElementById('seniorityChart').innerHTML = [
+    {label:'Junior',count:junCnt,color:'#E53935'},
+    {label:'Mid',count:midCnt,color:'#F59E0B'},
+    {label:'Senior',count:senCnt,color:'#1ABCB4'},
+  ].map(t=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+    <div style="width:10px;height:10px;border-radius:2px;background:${t.color}"></div>
+    <div style="flex:1;font-size:12px">${t.label}</div>
+    <div style="font-family:var(--mono);font-size:12px;font-weight:500">${t.count}</div>
+    <div style="font-size:11px;color:var(--slate-3);min-width:30px;text-align:right">${Math.round(t.count/total*100)}%</div>
+    <div style="width:100px;height:5px;background:var(--border);border-radius:3px;overflow:hidden">
+      <div style="height:5px;background:${t.color};border-radius:3px;width:${t.count/total*100}%"></div>
+    </div>
+  </div>`).join('');
+
+  // NPS
+  const daCnt=exits.filter(e=>e.nps==='da').length;
+  const mozdaCnt=exits.filter(e=>e.nps==='mozda').length;
+  const neCnt=exits.filter(e=>e.nps==='ne').length;
+  document.getElementById('npsChart').innerHTML = [
+    {label:'Da — preporučuje',count:daCnt,color:'var(--green)'},
+    {label:'Možda',count:mozdaCnt,color:'var(--amber)'},
+    {label:'Ne — ne preporučuje',count:neCnt,color:'var(--red)'},
+  ].map(t=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+    <div style="width:10px;height:10px;border-radius:50%;background:${t.color}"></div>
+    <div style="flex:1;font-size:12px">${t.label}</div>
+    <div style="font-family:var(--mono);font-size:12px;font-weight:500">${t.count}</div>
+    <div style="font-size:11px;color:var(--slate-3);min-width:30px;text-align:right">${Math.round(t.count/total*100)}%</div>
+    <div style="width:100px;height:5px;background:var(--border);border-radius:3px;overflow:hidden">
+      <div style="height:5px;background:${t.color};border-radius:3px;width:${t.count/total*100}%"></div>
+    </div>
+  </div>`).join('');
+
+  // Location (based on role text)
+  const nis=exits.filter(e=>e.role&&e.role.toLowerCase().includes('niš')).length;
+  const ub=exits.filter(e=>e.role&&e.role.toLowerCase().includes('ub')).length;
+  const beo=total-nis-ub;
+  document.getElementById('locationChart').innerHTML = [
+    {label:'Beograd / ostalo',count:beo,color:'#1ABCB4'},
+    {label:'Niš',count:nis,color:'#F59E0B'},
+    {label:'Ub',count:ub,color:'#2563EB'},
+  ].map(t=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+    <div style="width:10px;height:10px;border-radius:2px;background:${t.color}"></div>
+    <div style="flex:1;font-size:12px">${t.label}</div>
+    <div style="font-family:var(--mono);font-size:12px;font-weight:500">${t.count}</div>
+    <div style="font-size:11px;color:var(--slate-3);min-width:30px;text-align:right">${Math.round(t.count/total*100)}%</div>
+    <div style="width:100px;height:5px;background:var(--border);border-radius:3px;overflow:hidden">
+      <div style="height:5px;background:${t.color};border-radius:3px;width:${t.count/total*100}%"></div>
+    </div>
+  </div>`).join('');
+}
+
+function renderTrendChart() {
+  const {keys, monthly} = getMonthlyData();
+  const container = document.getElementById('trendChart');
+  const maxVal = Math.max(...keys.map(k=>monthly[k].count));
+  const W=720, H=160, PAD_L=32, PAD_B=26;
+  const BAR_W = Math.max(18, Math.floor((W-PAD_L-8)/keys.length)-5);
+
+  const DEPT_COLORS={'KP':'#E53935','IT':'#1ABCB4','Sales':'#F59E0B','Mkt':'#7C3AED','Ostalo':'#94A3B8'};
+  const TYPE_COLORS={voljna:'#F59E0B',nedobrovoljna:'#E53935',istek:'#2563EB'};
+
+  let svg = `<svg width="100%" viewBox="0 0 ${W} ${H+PAD_B}" class="chart-svg">`;
+  [0,Math.ceil(maxVal/2),maxVal].forEach(v => {
+    const y = H - (v/maxVal)*(H-10);
+    svg += `<line x1="${PAD_L}" y1="${y}" x2="${W}" y2="${y}" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3"/>`;
+    svg += `<text x="${PAD_L-4}" y="${y+4}" font-size="9" fill="var(--slate-3)" text-anchor="end" font-family="monospace">${v}</text>`;
+  });
+
+  keys.forEach((k, i) => {
+    const x = PAD_L + i*((W-PAD_L)/keys.length) + 2;
+    const [yr, mo] = k.split('-');
+    if(currentTrendMetric==='count') {
+      const v = monthly[k].count;
+      const barH = Math.max(3, (v/maxVal)*(H-10));
+      const y = H - barH;
+      svg += `<g><rect x="${x}" y="${y}" width="${BAR_W}" height="${barH}" rx="3" fill="var(--teal)" opacity=".85"/>
+        <text x="${x+BAR_W/2}" y="${H+15}" font-size="9" fill="var(--slate-3)" text-anchor="middle" font-family="monospace">${MONTHS_SR[parseInt(mo)-1]}</text>
+        <text x="${x+BAR_W/2}" y="${y-4}" font-size="9" fill="var(--slate-2)" text-anchor="middle" font-family="monospace">${v}</text>
+      </g>`;
+    } else if(currentTrendMetric==='type') {
+      let cumH=0;
+      ['voljna','nedobrovoljna','istek'].forEach(tp => {
+        const v = monthly[k][tp]||0;
+        const segH = Math.max(0, (v/maxVal)*(H-10));
+        const y = H - cumH - segH;
+        if(segH>0) svg += `<rect x="${x}" y="${y}" width="${BAR_W}" height="${segH}" rx="${cumH===0?'3':'0'}" fill="${TYPE_COLORS[tp]}" opacity=".85"/>`;
+        cumH+=segH;
+      });
+      const total_k = monthly[k].count;
+      svg += `<text x="${x+BAR_W/2}" y="${H+15}" font-size="9" fill="var(--slate-3)" text-anchor="middle" font-family="monospace">${MONTHS_SR[parseInt(mo)-1]}</text>
+        <text x="${x+BAR_W/2}" y="${H-cumH-4}" font-size="9" fill="var(--slate-2)" text-anchor="middle" font-family="monospace">${total_k}</text>`;
+    } else {
+      let cumH=0;
+      Object.entries(DEPT_COLORS).forEach(([ds, col]) => {
+        const v = (monthly[k].depts&&monthly[k].depts[ds])||0;
+        const segH = Math.max(0, (v/maxVal)*(H-10));
+        const y = H - cumH - segH;
+        if(segH>0) svg += `<rect x="${x}" y="${y}" width="${BAR_W}" height="${segH}" fill="${col}" opacity=".85"/>`;
+        cumH+=segH;
+      });
+      const total_k = monthly[k].count;
+      svg += `<text x="${x+BAR_W/2}" y="${H+15}" font-size="9" fill="var(--slate-3)" text-anchor="middle" font-family="monospace">${MONTHS_SR[parseInt(mo)-1]}</text>
+        <text x="${x+BAR_W/2}" y="${H-cumH-4}" font-size="9" fill="var(--slate-2)" text-anchor="middle" font-family="monospace">${total_k}</text>`;
+    }
+  });
+
+  // Legend
+  if(currentTrendMetric==='type') {
+    let lx=PAD_L;
+    Object.entries(TYPE_COLORS).forEach(([tp,col])=>{
+      svg+=`<rect x="${lx}" y="${H+PAD_B-8}" width="8" height="8" rx="2" fill="${col}"/>
+        <text x="${lx+10}" y="${H+PAD_B-1}" font-size="9" fill="var(--slate-2)" font-family="var(--font)">${tp}</text>`;
+      lx+=tp.length*6+20;
+    });
+  } else if(currentTrendMetric==='dept') {
+    let lx=PAD_L;
+    Object.entries(DEPT_COLORS).forEach(([ds,col])=>{
+      svg+=`<rect x="${lx}" y="${H+PAD_B-8}" width="8" height="8" rx="2" fill="${col}"/>
+        <text x="${lx+10}" y="${H+PAD_B-1}" font-size="9" fill="var(--slate-2)" font-family="var(--font)">${ds}</text>`;
+      lx+=ds.length*6+20;
+    });
+  }
+
+  svg+='</svg>';
+  container.innerHTML=svg;
+}
+
+function setTrendMetric(m, el) {
+  currentTrendMetric = m;
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  renderTrendChart();
+}
+
+// ============================================================
+// TABLE
+// ============================================================
+function renderTable() {
+  const exits = DATA.exits;
+  const search = (document.getElementById('searchInput')||{value:''}).value.toLowerCase();
+  const typeFilter = (document.getElementById('filterType')||{value:''}).value;
+  let filtered = exits.filter(e => {
+    const ms = !search || e.name.toLowerCase().includes(search) || (e.role||'').toLowerCase().includes(search);
+    const mt = !typeFilter || e.type===typeFilter;
+    const md = !currentDeptFilter || e.dept===currentDeptFilter;
+    return ms && mt && md;
+  });
+  const tc = document.getElementById('tableCount');
+  if(tc) tc.textContent = `· ${filtered.length}`;
+  const meta = document.getElementById('odlasciMeta');
+  if(meta) meta.textContent = currentDeptFilter ? `Odeljenje: ${currentDeptFilter.includes('Korisnička')?'Korisnička podrška':currentDeptFilter} · ${filtered.length} zapisa` : `Sva odeljenja · ${filtered.length} zapisa`;
+  const tb = document.getElementById('exitsTableBody');
+  if(!tb) return;
+  tb.innerHTML = filtered.sort((a,b)=>new Date(b.leave)-new Date(a.leave)).map(e => {
+    const days = tenureDays(e.hire, e.leave);
+    const isShort = days < 180;
+    const deptShort = e.dept.includes('Korisnička')?'KP':e.dept.includes('IT')?'IT':e.dept.includes('Sales')?'Sales':e.dept.includes('Marketing')?'Mkt':e.dept.substring(0,5);
+    return `<tr>
+      <td><strong style="font-weight:500">${e.name}</strong></td>
+      <td><span class="tag">${deptShort}</span></td>
+      <td style="font-size:11px;color:var(--slate-2)">${e.role||'—'}</td>
+      <td style="font-family:var(--mono);font-size:11px" class="${isShort?'short-tenure':'avg-tenure'}">${fmtDays(days)}</td>
+      <td><span class="type-badge ${e.type}">${e.type}</span></td>
+      <td><span class="tag">${REASON_LABELS[e.reason]||e.reason}</span></td>
+      <td><span class="nps-dot ${e.nps}" title="${e.nps}"></span></td>
+      <td style="font-size:11px;color:var(--slate-2);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${e.note||''}">${e.note||'—'}</td>
+      <td style="font-family:var(--mono);font-size:10px;white-space:nowrap">${new Date(e.leave).toLocaleDateString('sr-RS',{day:'2-digit',month:'2-digit',year:'2-digit'})}</td>
+      <td><button class="action-btn-sm" onclick="deleteExit(${e.id})">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// ENTRY FORM
+// ============================================================
+let radioVals = {fTypeGroup:'voljna', fNpsGroup:'da'};
+
+function setRadio(groupId, el) {
+  document.querySelectorAll(`#${groupId} .radio-btn`).forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  radioVals[groupId] = el.dataset.val;
+}
+
+function submitExit() {
+  const name = document.getElementById('fName').value.trim();
+  const dept = document.getElementById('fDept').value;
+  const hire = document.getElementById('fHire').value;
+  const leave = document.getElementById('fLeave').value;
+  const reason = document.getElementById('fReason').value;
+
+  if(!name||!dept||!hire||!leave||!reason) {
+    alert('Molimo popunite sva obavezna polja (ime, odeljenje, datum zapošljavanja, datum odlaska, razlog).');
+    return;
+  }
+
+  const newExit = {
+    id: Date.now(),
+    name, dept,
+    role: document.getElementById('fRole').value.trim(),
+    hire, leave,
+    type: radioVals.fTypeGroup || 'voljna',
+    newco: document.getElementById('fNewco').value.trim(),
+    seniority: document.getElementById('fSeniority').value,
+    reason,
+    nps: radioVals.fNpsGroup || 'da',
+    note: document.getElementById('fNote').value.trim(),
+    createdAt: new Date().toISOString()
+  };
+
+  DATA.exits.unshift(newExit);
+  resetForm();
+  renderAll();
+
+  const toast = document.getElementById('formSuccessToast');
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'), 3500);
+}
+
+function resetForm() {
+  ['fName','fRole','fNewco','fNote'].forEach(id=>document.getElementById(id).value='');
+  ['fDept','fReason'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fSeniority').value='junior';
+  ['fHire','fLeave'].forEach(id=>document.getElementById(id).value='');
+  radioVals.fTypeGroup='voljna'; radioVals.fNpsGroup='da';
+  document.querySelectorAll('#fTypeGroup .radio-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+  document.querySelectorAll('#fNpsGroup .radio-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+}
+
+function deleteExit(id) {
+  if(!confirm('Obriši ovaj exit?')) return;
+  DATA.exits = DATA.exits.filter(e=>e.id!==id);
+  renderAll();
+  renderTable();
+}
+
+// ============================================================
+// REFRESH
+// ============================================================
+function refreshData() {
+  renderAll();
+  document.getElementById('lastUpdated').textContent = 'Osveženo: ' + new Date().toLocaleTimeString('sr-RS');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderAll();
+setInterval(()=>{
+  document.getElementById('lastUpdated').textContent = 'Ažurirano: ' + new Date().toLocaleTimeString('sr-RS');
+}, 60000);
+</script>
+</body>
+</html>

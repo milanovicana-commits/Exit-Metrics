@@ -826,8 +826,7 @@ textarea.form-control{resize:vertical;min-height:80px}
 // ============================================================
 
 
-const API_URL = "https://script.google.com/macros/s/AKfycbzVlfwXv4spfYPQlGuYYsPdTtSUBFb0Ja28P78g_ep7rYaDuJkLhgGzG8Os2qtbYODr/exec";
-
+const API_URL = "http://localhost:3000/exits";
 async function loadData() {
   try {
     const response = await fetch(API_URL);
@@ -1396,6 +1395,7 @@ function setRadio(groupId, el) {
 
 async function submitExit() {
   
+  console.log(API_URL);
     console.log("submitExit je pozvan");
   const name = document.getElementById('fName').value.trim();
   const dept = document.getElementById('fDept').value;
@@ -1424,15 +1424,14 @@ async function submitExit() {
 
 try {
 
-    const formData = new FormData();
 
-Object.keys(newExit).forEach(key => {
-    formData.append(key, newExit[key]);
-});
 
 const response = await fetch(API_URL, {
     method: "POST",
-    body: formData
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(newExit)
 });
 
     const result = await response.json();

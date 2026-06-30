@@ -1395,6 +1395,8 @@ function setRadio(groupId, el) {
 }
 
 async function submitExit() {
+  
+    console.log("submitExit je pozvan");
   const name = document.getElementById('fName').value.trim();
   const dept = document.getElementById('fDept').value;
   const hire = document.getElementById('fHire').value;
@@ -1442,11 +1444,9 @@ try {
         toast.classList.add('show');
         setTimeout(()=>toast.classList.remove('show'),3500);
 
-    }else{d
-
-        alert("Greška prilikom čuvanja.");
-
-    }
+  }else{
+    alert("Greška prilikom čuvanja.");
+}
 
 }catch(err){
 

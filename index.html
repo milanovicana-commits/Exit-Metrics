@@ -1424,14 +1424,16 @@ async function submitExit() {
 
 try {
 
-    const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-    "Content-Type": "text/plain;charset=utf-8"
-},
-body: JSON.stringify(newExit),
-redirect: "follow"
-    });
+    const formData = new FormData();
+
+Object.keys(newExit).forEach(key => {
+    formData.append(key, newExit[key]);
+});
+
+const response = await fetch(API_URL, {
+    method: "POST",
+    body: formData
+});
 
     const result = await response.json();
 

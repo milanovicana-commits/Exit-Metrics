@@ -1469,23 +1469,36 @@ function resetForm() {
 }
 
 async function deleteExit(id) {
+
     console.log("DELETE ID:", id);
 
     if (!confirm("Obriši ovaj exit?")) return;
 
     try {
-        console.log(`${API_URL}/${id}`);
 
-        await fetch(`${API_URL}/${id}`, {
-            method: "DELETE"
+        const response = await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({
+                action: "delete",
+                id: id
+            })
         });
 
-        await loadData();
+        const result = await response.json();
+
+        if (result.success) {
+            await loadData();
+        } else {
+            alert("Exit nije pronađen.");
+        }
 
     } catch (err) {
+
         console.error(err);
         alert("Greška prilikom brisanja.");
+
     }
+}
 }
 // ============================================================
 // REFRESH
